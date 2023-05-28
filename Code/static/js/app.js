@@ -11,15 +11,22 @@ d3.json(url).then(function(data) {
   d3.select("select").append("option").attr("value",data.names[i]).text(data.names[i])
 
   };
+  // match the dropdown to a function
+  var dropdown = document.getElementById("selDataset")
+  dropdown.onchange = function optionChanged() {
+  
+    var selectedValue = document.getElementById("selDataset").value
 
-  document.getElementById("selDataset").onchange = function optionChanged(value) {
-    // define the variables to be used in the charts
-    
-    console.log(value)
-    
-    let sampleValues = data.samples[0].sample_values;
-    let otuIds = data.samples[0].otu_ids;
-    let otuLabels = data.samples[0].otu_labels;
+    console.log(selectedValue)
+    let x=0
+    for (let j = 0; j < data.names.length; j++) {
+    if (selectedValue == data.names[j]) {x=j}}
+
+      // define the variables to be used in the charts
+
+    let sampleValues = data.samples[x].sample_values;
+    let otuIds = data.samples[x].otu_ids;
+    let otuLabels = data.samples[x].otu_labels;
 
     let sortedValues = sampleValues.sort((a,b) => b - a);
 
@@ -61,7 +68,7 @@ d3.json(url).then(function(data) {
 
     //Gauge
 
-    let numWash = data.metadata[0].wfreq
+    let numWash = data.metadata[x].wfreq
 
     var gdata = [{
       domain: { x: [0, 1], y: [0, 1] },
@@ -100,8 +107,8 @@ d3.json(url).then(function(data) {
     Plotly.newPlot('gauge', gdata, layout);
 
     //Demographic Information (Metadata)
-    let demInfo = data.metadata[0]; 
-    console.log(demInfo)
+    let demInfo = data.metadata[x]; 
+
     d3.select("#sample-metadata").html(`ID: ${demInfo.id} <br> Age: ${demInfo.age} <br> Sex: ${demInfo.gender} <br> Belly Button Type: ${demInfo.bbtype} <br> Ethnicity: ${demInfo.ethnicity} <br> Location: ${demInfo.location} <br> Wash Frequency: ${demInfo.wfreq}`)
 
   };
